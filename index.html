@@ -2,9 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Stream Limpio</title>
+<title>Stream Limpio Bypass</title>
 
 <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
+
 <style>
   html, body {
     margin: 0;
@@ -26,12 +27,34 @@
 <video id="player" class="video-js vjs-default-skin" controls autoplay playsinline></video>
 
 <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
 <script>
-  var player = videojs('player');
-  player.src({
-    src: "https://a118.azplay47.me/hls/streama265518/index.m3u8?cst=6313934626c897dae762659ac565fed5",
-    type: "application/x-mpegURL"
+const video = document.getElementById('player');
+const src = "https://a118.azplay47.me/hls/streama265518/index.m3u8?cst=6313934626c897dae762659ac565fed5";
+
+// BYPASS: User-Agent + Referer + Origin
+const bypassHeaders = {
+  "Referer": "https://apl504.me/",
+  "Origin": "https://apl504.me",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
+};
+
+if (Hls.isSupported()) {
+  const hls = new Hls({
+    xhrSetup: function(xhr, url) {
+      xhr.withCredentials = false;
+      for (const h in bypassHeaders) {
+        xhr.setRequestHeader(h, bypassHeaders[h]);
+      }
+    }
   });
+
+  hls.loadSource(src);
+  hls.attachMedia(video);
+} else {
+  video.src = src;
+}
 </script>
 
 </body>
